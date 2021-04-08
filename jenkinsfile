@@ -29,4 +29,14 @@ node
         sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.29.10:/opt/apache-tomcat-9.0.44/webapps/"
         }
         }
+        
+        stage('email')
+        {  
+           emailext body: '''scriptedway-pipeline
+
+          regards
+          --------
+         m.ramesh
+         6361136937''', subject: 'scriptedway-pipeline', to: 'rameshmasagani@gmail.com'
+    }
 }
