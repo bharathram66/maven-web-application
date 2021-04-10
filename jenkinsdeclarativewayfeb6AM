@@ -1,1 +1,89 @@
 
+pipeline
+{ 
+
+agent any
+
+tools {
+maven'maven3.6.3'
+}
+
+triggers{
+pollSCM('* * * * *')    
+}
+
+options{
+//Add the timestamps to consoleoutput
+timestamps{}
+
+buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '6', daysToKeepStr: '', numToKeepStr: '6'))
+
+}
+
+
+stages{
+
+ stage('checkout')
+ {
+   steps{ 
+      git branch: 'development', credentialsId: 'af209385-0a2e-4aa3-ad83-def584427ed3', 
+      url: 'https://github.com/bharathram66/maven-web-application.git'
+   }
+  }
+ 
+ stage('build')
+ {
+   steps{
+     sh "mvn clean package" 
+  }
+  }
+  
+ stage('executesonarqubereport')
+  {
+   steps{
+    sh "mvn sonar:sonar"
+   }
+   }
+ 
+ stage('uploadartifactnexus')
+  {
+     steps{
+      sh "mvn deploy"
+    }
+    }
+    
+ stage('deployinto tomcat server')
+  { 
+     steps{
+      sshagent(['98e8bbff-b183-411e-9c54-bc3c613b5ebe']) {
+        sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.29.10:/opt/apache-tomcat-9.0.44/webapps/"
+        }
+        }
+       }
+       
+       post{
+      
+       success{
+        emailext body: '''build is over -declarative way
+
+         regards
+         ramesh
+       9951360574''', subject: 'build is success -declarative way', to: 'rameshmasagani@gmail.com'
+          }
+
+        failure{ 
+           emailext body: '''build is over -declarative way
+
+           regards
+          ramesh
+       9951360574''', subject: 'build is failed -declarative way', to: 'rameshmasagani@gmail.com'
+         }
+     }
+}
+}
+
+
+
+
+
+  
