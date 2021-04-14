@@ -23,7 +23,7 @@ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '6', 
 
 stages{
 
- stage('checkout')
+ stage('checkout ramesh')
  {
    steps{ 
       git branch: 'development', credentialsId: 'af209385-0a2e-4aa3-ad83-def584427ed3', 
@@ -37,7 +37,7 @@ stages{
      sh "mvn clean package" 
   }
   }
-  
+  /*
  stage('executesonarqubereport')
   {
    steps{
@@ -60,7 +60,7 @@ stages{
         }
         }
        }
-       
+       */
        post{
       
        success{
