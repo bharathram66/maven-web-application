@@ -8,7 +8,7 @@ node
     url: 'https://github.com/bharathram66/maven-web-application.git'
     }
     
-    stage('build')
+    stage('build maven')
     {
         sh "${mavenHome}/bin/mvn clean package"
     }
